@@ -9,11 +9,17 @@ These are the concepts I want to achieve in using kops and terraform.
 katana
   - modules/
       - ...different modules...
+      - kops_generator/
+          - overrides/
+              - file_override.tf.tpl
+          - kops_commands.tf
+          - main.tf
+          - variables.tf
   - {environment}/
       - main.tf
-      - kubernetes/
+      - kops/
           - override.tf
-          - user_data_overrides/
+          - user_data/
 ```
 
 ```sh
@@ -21,13 +27,14 @@ katana
 terraform apply --target=module.k8svpc
 
 # kops create cluster command that will generate kubernetes.tf
-terraform apply --target=module.kops_generator.create_cluster
+terraform apply --target=module.create_cluster
+
+# Finally applies the generated kubernetes.tf
+terraform apply --target=module.k8s
 
 # If you want to add more nodes
 terraform apply --target=module.kops_generator.create_ig
 
-# applies the generated kubernetes.tf
-terraform apply --target=module.k8s
 ```
 
 
@@ -49,7 +56,7 @@ kops create cluster \
   --vpc=${var.vpc_id} \
   --target=terraform \
   --state=${var.kops_state}
-  --out ${file("${path.module}/kubernetes/")} \
+  --out kubernetes/ \
   ${var.cluster_name}
 ```
 

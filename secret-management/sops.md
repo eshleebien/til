@@ -210,3 +210,5 @@ then
 fi
 cleanup
 ```
+
+There are probably better solutions out there. Last month I learned how to use Vault by Hashicorp and integrate it with chef but realized that it is too complicated for us.
