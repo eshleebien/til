@@ -20,7 +20,7 @@ We are wrong. I am wrong :D
 
 ### Ensuring your applications receives the signal
 
-Let's start with the most simple ways.
+Let's start with the most simple way.
 
 #### Your app as the main process (PID 1)
 
@@ -59,6 +59,7 @@ if __name__ == '__main__':
     time.sleep(1)
 ```
 
+In our Dockerfile,
 ```
 FROM python:3.7.3-alpine3.9
 COPY ./signals.py ./signals.py
@@ -101,7 +102,8 @@ That's great!
 
 #### Your app is initiated by a bash script
 Often times a script is initiated from a bash script.
-Problem with that, is the application won't receive any signals and will be killed brutally.
+
+Problem with that, the application won't receive any signals and will be killed brutally.
 
 Say you have a ```run.sh``` like this:
 ```bash
@@ -111,11 +113,11 @@ ENVIRONMENT="staging"
 OTHERAPPVAR=true
 python signals.py
 
-## or for example gunicorn with lots different parameters
+## or for example gunicorn with lots of different parameters
 # gunicorn [OPTIONS] app:app
 ```
 
-In Dockerfile, were gonna replace the entrypoint with ```run.sh``` instead
+In Dockerfile, we'll gonna replace the entrypoint with ```run.sh```.
 ```bash
 FROM python:3.7.3-alpine3.9
 COPY ./signals.py ./signals.py
@@ -125,7 +127,7 @@ ENTRYPOINT ["./run.sh"]
 ```
 
 Build and then run the container.
-Open a new container and run ```ps``` to check what process is in PID 1.
+Open a new container and run ```ps``` to check what process is in PID 1:
 ```bash
 $ docker exec -it python-signals ps
 PID   USER     TIME  COMMAND
@@ -140,11 +142,10 @@ So let's see if by running "docker stop" our application will receive the ```SIG
 $ docker stop python-signals
 ```
 
-This time, there's no print message from the application. It was just brutally killed.
+This time, there's no print message from the application. It was just brutally killed :(
 
-Let's go back to our run script and add ```exec```.
+Now, Let's go back to our run script and add ```exec```.
 
-```bash
 ```bash
 #!/bin/sh
 
@@ -154,8 +155,9 @@ exec python signals.py
 ```
 
 The ```exec``` command allows us to execute a command that completely replaces the current process.
-In our first version of run.sh, the current process is the actual bash script so it is the PID 1. It then created a child process for the python application.
-This ```exec``` command replaces that parent process making the python application to be the PID 1 instead.
+In our first version of run.sh, the current process is the actual bash script. Therefore, it is the PID 1. It then created a child process for the python application.
+
+This ```exec``` command replaces that current process making the python application to be the PID 1 instead.
 
 Now build and run it then run ```ps```.
 ```bash
@@ -164,4 +166,6 @@ PID   USER     TIME  COMMAND
    12 root      0:00 ps
 ```
 
-Now our application should be able to handle the signal.
+Voila! Now our application should be able to handle the signal.
+
+Thank you for reading!
