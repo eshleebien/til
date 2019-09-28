@@ -144,3 +144,10 @@ SELECT current_timestamp as date, blocked_locks.pid     AS blocked_pid,
     JOIN pg_catalog.pg_stat_activity blocking_activity ON blocking_activity.pid = blocking_locks.pid
    WHERE NOT blocked_locks.GRANTED and blocked_activity.query_start > NOW() - INTERVAL '1 minute';
 ```
+
+--Set autovacuum parameters per table
+```sql
+ALTER TABLE schema.table_name SET (autovacuum_vacuum_cost_limit = 1300);
+ALTER TABLE schema.table_name SET (autovacuum_vacuum_scale_factor = 0.01);
+```
+--These commands (SET attributes) will only acquire SHARE UPDATE EXCLUSIVE lock which is generally safe from transactions
