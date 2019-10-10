@@ -42,3 +42,9 @@ Updated member with ID <etcd-member-id> in cluster
 
 ## Adding a member
 
+
+
+### Reference
+https://github.com/etcd-io/etcd/blob/master/Documentation/v2/admin_guide.md#restoring-a-backup
+https://github.com/etcd-io/etcd/blob/master/Documentation/v2/runtime-configuration.md#update-a-member
+
