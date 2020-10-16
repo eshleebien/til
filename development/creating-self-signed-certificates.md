@@ -24,11 +24,15 @@ O = MyCompany
 OU = Engineering
 CN = MyCompany Development Certificate
 emailAddress = dev@mycompany.com
+[ v3_ca ]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer
+basicConstraints = CA:true
 ```
 
 Use the config and the private key to generate a public certificate authority
 ```
-$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -config ca.cfg -out ca.crt
+$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -extensions v3_ca -config ca.cfg -out ca.crt
 ```
 
 Now, you can use it to sign certificates
